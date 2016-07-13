@@ -25,8 +25,17 @@
 (defonce server (start-server :port 7888))
 
 (defn format-output [val]
-  (let [myvec (str/split (apply str val) #" ")]
-    (println myvec)))
+  (let [myvec (apply str val)
+        modvec (str/split myvec #",")
+        counter (count modvec)]
+    (println "Amount: " (count modvec))
+    (println myvec)
+    (if (= counter 6)
+      (str (nth (str/split (nth modvec 3) #"}") 0) "\n" ":out nil")
+      (if (= counter 8)
+        (str (nth (str/split (nth modvec 1) #"}") 0) "\n" (nth (str/split (nth modvec 5) #"}") 0))
+        (if (= counter 10)
+          (str (nth modvec 0)))))))
 
 (defn run-command []
   (with-open [conn (repl/connect :port 7888)]
