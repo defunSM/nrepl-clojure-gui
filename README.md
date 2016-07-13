@@ -5,7 +5,13 @@ A Clojure library designed to ... well, that part is up to you.
 
 ## Usage
 
-FIXME
+    lein run -m nrepl-gui.core
+    
+## ToDo
+
+- Adding nREPLs by port
+- Connecting to external nREPLs
+- Add a menubar
 
 ## License
 
