@@ -17,10 +17,11 @@ A seesaw GUI that can host a clojure nREPL
 
 ## License
 
-Copyright © 2016 FIXME
+Copyright © 2016 SALMAN HOSSAIN
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
+
 =======
 # nrepl-clojure-gui
 A seesaw GUI that can host a clojure nREPL.
