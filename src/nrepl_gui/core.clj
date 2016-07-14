@@ -20,8 +20,11 @@
 
 (declare display-area)
 (declare direct-input)
+(declare f)
 
-(defonce server (start-server :port 7888))
+(def serverport (atom 7888))
+
+(defonce server (start-server :port @serverport))
 ;; add nrepl functionallity to the frame
 
 (defn format-output [val]
@@ -38,7 +41,7 @@
           (str (nth modvec 0)))))))
 
 (defn run-command []
-  (with-open [conn (repl/connect :port 7888)]
+  (with-open [conn (repl/connect :port @serverport)]
     (text! display-area (format-output (doall (repl/message (repl/client conn 1000) {:op :eval :code (text direct-input)}))))))
 
 (defn keypress [e]
@@ -81,16 +84,22 @@
                                           .getClassName
 SubstanceLookAndFeel/setSkin)))])]))
 
+(defn converToInt [string]
+  (Integer. (re-find #"\d+" string)))
+
 (defn handler [event]
   (let [e (.getActionCommand event)]
     (if (= e "Exit")
       (System/exit 0))
     (if (= e "Stop nREPL server")
-      (stop-server server))
+      (do (stop-server server)
+          (text! display-area (str "Clojure nREPL 127.0.0.1:" @serverport " is terminated."))))
     (if (= e "Select Theme")
       (-> (frame :title "Themes" :id 3 :content (laf-selector) :on-close :hide :height 600 :width 300) pack! show!))
     (if (= e "Start nREPL Server")
-      (start-server :port 7888))))
+      (do (reset! serverport (converToInt (input "Enter a port number: " :title "Create nREPL Server" :value "3000")))
+          (start-server :port @serverport)
+          (text! display-area (str "Clojure nREPL 127.0.0.1:" @serverport " has been created."))))))
 
 (def exit-program (menu-item :text "Exit"
                               :tip "Closes the entire program."
@@ -111,7 +120,8 @@ SubstanceLookAndFeel/setSkin)))])]))
 (def f (frame :title "nRepl GUI"
               :id 1
               :menubar (menubar :items
-                                [(menu :text "File" :items [starting-server stopping-server select-theme exit-program])])
+                                [(menu :text "File" :items [starting-server stopping-server exit-program])
+                                 (menu :text "Settings" :items [select-theme])])
               :width 640
               :height 480
               :on-close :exit
@@ -122,4 +132,4 @@ SubstanceLookAndFeel/setSkin)))])]))
   (println "GUI up and running...")
   (invoke-later
    (-> f pack! show!)
-   (SubstanceLookAndFeel/setSkin "org.pushingpixels.substance.api.skin.GraphiteAquaSkin")))
+   (SubstanceLookAndFeel/setSkin "org.pushingpixels.substance.api.skin.ChallengerDeepSkin")))
