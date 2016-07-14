@@ -2,7 +2,7 @@
 
 A seesaw GUI that can host a clojure nREPL
 
-http://imgur.com/k3FCtL0l.png
+![nrepl-clojure-gui](http://imgur.com/k3FCtL0l.png)
 
 ## Usage
 
