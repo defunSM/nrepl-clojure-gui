@@ -1,6 +1,6 @@
 # nrepl-gui
 
-A Clojure library designed to ... well, that part is up to you.
+A seesaw GUI that can host a clojure nREPL
 
 ## Usage
 

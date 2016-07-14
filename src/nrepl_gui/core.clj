@@ -21,8 +21,8 @@
 (declare display-area)
 (declare direct-input)
 
-;; add nrepl functionallity to the frame
 (defonce server (start-server :port 7888))
+;; add nrepl functionallity to the frame
 
 (defn format-output [val]
   (let [myvec (apply str val)
@@ -88,7 +88,9 @@ SubstanceLookAndFeel/setSkin)))])]))
     (if (= e "Stop nREPL server")
       (stop-server server))
     (if (= e "Select Theme")
-      (-> (frame :title "Themes" :id 3 :content (laf-selector) :on-close :hide :height 600 :width 300) pack! show!))))
+      (-> (frame :title "Themes" :id 3 :content (laf-selector) :on-close :hide :height 600 :width 300) pack! show!))
+    (if (= e "Start nREPL Server")
+      (start-server :port 7888))))
 
 (def exit-program (menu-item :text "Exit"
                               :tip "Closes the entire program."
@@ -102,10 +104,14 @@ SubstanceLookAndFeel/setSkin)))])]))
                              :tip "Allows you to change the current theme."
                              :listen [:action handler]))
 
+(def starting-server (menu-item :text "Start nREPL Server"
+                             :tip "Starts a nREPL server."
+                             :listen [:action handler]))
+
 (def f (frame :title "nRepl GUI"
               :id 1
               :menubar (menubar :items
-                                [(menu :text "File" :items [stopping-server select-theme exit-program])])
+                                [(menu :text "File" :items [starting-server stopping-server select-theme exit-program])])
               :width 640
               :height 480
               :on-close :exit
