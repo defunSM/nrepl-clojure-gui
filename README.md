@@ -18,10 +18,10 @@ Selecting a theme for the nREPL GUI.
     
 ## ToDo
 
-- Adding nREPLs by port [DONE] (Add more feaatures like telling user of creation of another server)
-- Connecting to external nREPLs [DONEish] 
+- Adding nREPLs by port (Add more feaatures like telling user of creation of another server)
+- Connecting to external nREPLs  
 - A settings file. (in progress)
-- Add a menubar [DONEish] (add more features)
+- Add a menubar (add more features)
 
 ## License
 
