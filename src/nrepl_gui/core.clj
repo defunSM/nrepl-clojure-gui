@@ -99,7 +99,10 @@ SubstanceLookAndFeel/setSkin)))])]))
     (if (= e "Start nREPL Server")
       (do (reset! serverport (converToInt (input "Enter a port number: " :title "Create nREPL Server" :value "3000")))
           (start-server :port @serverport)
-          (text! display-area (str "Clojure nREPL 127.0.0.1:" @serverport " has been created."))))))
+          (text! display-area (str "Clojure nREPL 127.0.0.1:" @serverport " has been created."))))
+    (if (= e "Connect to external nREPL server")
+      (do (reset! serverport (converToInt (input "Enter the port of the external nREPL server." :title "Connect to external nREPL server.")))
+          (stop-server server)))))
 
 (def exit-program (menu-item :text "Exit"
                               :tip "Closes the entire program."
@@ -109,18 +112,22 @@ SubstanceLookAndFeel/setSkin)))])]))
                              :tip "Stops the current nREPL server."
                              :listen [:action handler]))
 
-(def select-theme (menu-item :text "Select Theme"
+(def select-theme (menu-item :text "Select theme"
                              :tip "Allows you to change the current theme."
                              :listen [:action handler]))
 
-(def starting-server (menu-item :text "Start nREPL Server"
-                             :tip "Starts a nREPL server."
-                             :listen [:action handler]))
+(def starting-server (menu-item :text "Start nREPL server"
+                                :tip "Starts a nREPL server."
+                                :listen [:action handler]))
+
+(def connecting-server (menu-item :text "Connect to external nREPL server"
+                                  :tip "Connect to an external nREPL server."
+                                  :listen [:action handler]))
 
 (def f (frame :title "nRepl GUI"
               :id 1
               :menubar (menubar :items
-                                [(menu :text "File" :items [starting-server stopping-server exit-program])
+                                [(menu :text "File" :items [starting-server stopping-server connecting-server exit-program])
                                  (menu :text "Settings" :items [select-theme])])
               :width 640
               :height 480
