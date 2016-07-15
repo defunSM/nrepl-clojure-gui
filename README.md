@@ -4,7 +4,7 @@ A seesaw GUI that can host a clojure nREPL
 
 ![nrepl-clojure-gui](http://imgur.com/k3FCtL0l.png)
 
-Creating a clojure nREPL by default 127.0.0.1:7888
+Creating a clojure nREPL by default 127.0.0.1:8000
 
 ![creating an clojure-nrepl](http://imgur.com/kNGntCll.png)
 
