@@ -6,7 +6,7 @@ A seesaw GUI that can host a clojure nREPL
 
 A text editor to edit text with
 
-![text-editor](http://imgur.com/ByP5v9il.png)
+![text-editor](http://imgur.com/zLKYlAKl.png)
 
 Creating a clojure nREPL by default 127.0.0.1:8000
 
