@@ -61,7 +61,7 @@
 
 
 (def input-command (text :multi-line? false :text "" :listen [:key-typed keypress]))
-(def display-area (text :multi-line? true :text (network-command) :foreground "white" :background "black"))
+(def display-area (text :multi-line? true :text "You have launched a Terminal.\n\n\n\n\n" :foreground "white" :background "black"))
 (def enter-command (button :text "Enter"))
 
 (defn laf-selector []
@@ -80,10 +80,11 @@
                                           .getClassName
 SubstanceLookAndFeel/setSkin)))])]))
 
+(defn southcontent []
+  (horizontal-panel :items [(label :text "$") input-command]))
 
 (def content (border-panel
-
-              :north  input-command
+              :south  (southcontent)
               :center (scrollable display-area)
               :vgap 5 :hgap 5 :border 5))
 
@@ -133,7 +134,7 @@ SubstanceLookAndFeel/setSkin)))])]))
 
 ;; make the display-area scrollable [Need to do]
 
-(def f (frame :title "SSH Graphical User Interface (SGUI) alpha 1.0.0"
+(def f (frame :title "Terminal"
               :id 1
               :menubar (menubar :items
                                 [(menu :text "File" :items [refresh-ip-network list-directories wificonnection displaylsblk close-program])
