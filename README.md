@@ -2,7 +2,11 @@
 
 A seesaw GUI that can host a clojure nREPL
 
-![nrepl-clojure-gui](http://imgur.com/k3FCtL0l.png)
+![nrepl-clojure-gui](http://imgur.com/S5yd7H1l.png)
+
+A text editor to edit text with
+
+![text-editor](http://imgur.com/ByP5v9il.png)
 
 Creating a clojure nREPL by default 127.0.0.1:8000
 
@@ -21,13 +25,16 @@ Selecting a theme for the nREPL GUI.
 - Adding nREPLs by port (DONE)
 - Connecting to external nREPLS (DONE)  
 - A settings file. (COMING UP)
+- Text Editor (DONE)
 - Add a menubar (added a terminal)
+
 
 ## Features 
 
 - Can run clojure code.
 - Can connect to external nREPLs.
 - Can launch a terminal to run bash commands. (NOT FULLY FUNCTIONAL YET)
+- Can be used to edit text.
 
 ## License
 
