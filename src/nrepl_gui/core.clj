@@ -12,6 +12,7 @@
 (use 'seesaw.keymap)
 (use 'clojure.java.shell)
 (use 'clojure.pprint)
+(use 'clojure.java.io)
 (use '[clojure.tools.nrepl.server :only (start-server stop-server)])
 (use 'seesaw.dev)
 (native!)
@@ -27,6 +28,7 @@
 (def serverport (atom 8000))
 
 (defonce server (start-server :port @serverport))
+(def current-file (atom "example213123.txt"))
 ;; add nrepl functionallity to the frame
 
 (defn format-output [val]
@@ -66,9 +68,13 @@
 (defn clojure-input []
   (horizontal-panel :items [label-for-input direct-input]))
 
+(def text-editor
+  (text :multi-line? true :text "\n\n\n\n"))
+
 (def content (border-panel
 
-              :center display-area
+              :center (tabbed-panel :tabs [{ :title "nREPL" :content display-area}
+                                           { :title "Text Editor" :content text-editor}])
               :south (clojure-input)
               :vgap 5 :hgap 5 :border 5))
 
@@ -110,7 +116,14 @@ SubstanceLookAndFeel/setSkin)))])]))
     (if (= e "Documentation")
       (do (-> (frame :title "Documentation" :id 6 :content (scrollable (doc-f)) :on-close :hide :height 600 :width 300) pack! show!)))
     (if (= e "Run Terminal")
-      (do (invoke-later (-> sshgui.core/f pack! show!))))))
+      (do (invoke-later (-> sshgui.core/f pack! show!))))
+    (if (= e "Open File...")
+      (do (reset! current-file (input "Enter the path to the file File you want to access: "))
+          (text! text-editor (slurp @current-file))))
+    (if (= e "Save File...")
+      (do (spit @current-file (text text-editor))))
+    (if (= e "Save File As...")
+      (do (spit (input "Enter the path you want to save to: ") (text text-editor))))))
 
 (defn doc-f [] (text :multi-line? true :text "[Documentation]\n\nBy default the server started is on 127.0.0.1:8000\n\nTo Stop the Server:\n\n1) Go to File.\n2) Click 'Stop nREPL server'.\n3) This will terminate the server and you'll be notified of the server being terminated.\n\nTo Start a New Server:\n\n1) Go to File.\n2) Click 'Start nREPL server'.\n3) Enter the port you want in the input box.\n4) The host is by default 127.0.0.1 and should show that you are connected.\n\nConnect to External nREPL Server:\n\n1) Go to File.\n2) Click connect to external nREPL using the port number.\n3)Make sure that the external is running or there will be an error.\n\n For more information check the github:\nhttps://github.com/defunSM/nrepl-clojure-gui" :wrap-lines? true :columns 30))
 
@@ -143,10 +156,22 @@ SubstanceLookAndFeel/setSkin)))])]))
                              :tip "Provides a terminal allowing you to run bash commands."
                              :listen [:action handler]))
 
+(def open-file (menu-item :text "Open File..."
+                          :tip "Opens a file and displays it in the text editor."
+                          :listen [:action handler]))
+
+(def save-file (menu-item :text "Save File..."
+                          :tip "Saves the file to the one opened at"
+                          :listen [:action handler]))
+
+(def save-as-file (menu-item :text "Save File As..."
+                             :tip "Saves the file to a specific path chosen by user."
+                             :listen [:action handler]))
+
 (def f (frame :title "nRepl GUI"
               :id 1
               :menubar (menubar :items
-                                [(menu :text "File" :items [starting-server stopping-server connecting-server run-terminal exit-program])
+                                [(menu :text "File" :items [starting-server stopping-server connecting-server open-file save-file  save-as-file run-terminal exit-program])
                                  (menu :text "Settings" :items [select-theme])
                                  (menu :text "Help" :items [docs])])
               :width 640
