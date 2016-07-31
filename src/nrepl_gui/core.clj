@@ -2,7 +2,8 @@
   (:import org.pushingpixels.substance.api.SubstanceLookAndFeel)
   (:gen-class)
   (:require [clojure.string :as str]
-            [clojure.tools.nrepl :as repl]))
+            [clojure.tools.nrepl :as repl]
+            [nrepl-gui.sshgui]))
 
 (use 'clojure.repl)
 (use 'seesaw.core)
@@ -107,7 +108,9 @@ SubstanceLookAndFeel/setSkin)))])]))
       (do (reset! serverport (converToInt (input "Enter the port of the external nREPL server." :title "Connect to external nREPL server.")))
           (stop-server server)))
     (if (= e "Documentation")
-      (do (-> (frame :title "Documentation" :id 6 :content (scrollable (doc-f)) :on-close :hide :height 600 :width 300) pack! show!)))))
+      (do (-> (frame :title "Documentation" :id 6 :content (scrollable (doc-f)) :on-close :hide :height 600 :width 300) pack! show!)))
+    (if (= e "Run Terminal")
+      (do (invoke-later (-> sshgui.core/f pack! show!))))))
 
 (defn doc-f [] (text :multi-line? true :text "[Documentation]\n\nBy default the server started is on 127.0.0.1:8000\n\nTo Stop the Server:\n\n1) Go to File.\n2) Click 'Stop nREPL server'.\n3) This will terminate the server and you'll be notified of the server being terminated.\n\nTo Start a New Server:\n\n1) Go to File.\n2) Click 'Start nREPL server'.\n3) Enter the port you want in the input box.\n4) The host is by default 127.0.0.1 and should show that you are connected.\n\nConnect to External nREPL Server:\n\n1) Go to File.\n2) Click connect to external nREPL using the port number.\n3)Make sure that the external is running or there will be an error.\n\n For more information check the github:\nhttps://github.com/defunSM/nrepl-clojure-gui" :wrap-lines? true :columns 30))
 
@@ -136,10 +139,14 @@ SubstanceLookAndFeel/setSkin)))])]))
                       :tip "Provides documentation and help."
                       :listen [:action handler]))
 
+(def run-terminal (menu-item :text "Run Terminal"
+                             :tip "Provides a terminal allowing you to run bash commands."
+                             :listen [:action handler]))
+
 (def f (frame :title "nRepl GUI"
               :id 1
               :menubar (menubar :items
-                                [(menu :text "File" :items [starting-server stopping-server connecting-server exit-program])
+                                [(menu :text "File" :items [starting-server stopping-server connecting-server run-terminal exit-program])
                                  (menu :text "Settings" :items [select-theme])
                                  (menu :text "Help" :items [docs])])
               :width 640
