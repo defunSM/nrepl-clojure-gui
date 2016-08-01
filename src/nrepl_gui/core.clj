@@ -65,8 +65,11 @@
 (def label-for-input
   (label :text "> "))
 
+(defn status-label []
+  (label :text "Status: Ready" :h-text-position :left :v-text-position :bottom))
+
 (defn clojure-input []
-  (horizontal-panel :items [label-for-input direct-input]))
+  (vertical-panel :items [(horizontal-panel :items [label-for-input direct-input]) (status-label)]))
 
 (def text-editor
   (text :multi-line? true :text "\n\n\n\n"))
@@ -123,7 +126,10 @@ SubstanceLookAndFeel/setSkin)))])]))
     (if (= e "Save File...")
       (do (spit @current-file (text text-editor))))
     (if (= e "Save File As...")
-      (do (spit (input "Enter the path you want to save to: ") (text text-editor))))))
+      (do (spit (input "Enter the path you want to save to: ") (text text-editor))))
+    (if (= e "Send to nREPL")
+      (do (with-open [conn (repl/connect :port @serverport)]
+            (text! display-area (format-output (doall (repl/message (repl/client conn 1000) {:op :eval :code (text text-editor)})))))))))
 
 (defn doc-f [] (text :multi-line? true :text "[Documentation]\n\nBy default the server started is on 127.0.0.1:8000\n\nTo Stop the Server:\n\n1) Go to File.\n2) Click 'Stop nREPL server'.\n3) This will terminate the server and you'll be notified of the server being terminated.\n\nTo Start a New Server:\n\n1) Go to File.\n2) Click 'Start nREPL server'.\n3) Enter the port you want in the input box.\n4) The host is by default 127.0.0.1 and should show that you are connected.\n\nConnect to External nREPL Server:\n\n1) Go to File.\n2) Click connect to external nREPL using the port number.\n3)Make sure that the external is running or there will be an error.\n\n For more information check the github:\nhttps://github.com/defunSM/nrepl-clojure-gui" :wrap-lines? true :columns 30))
 
@@ -168,10 +174,15 @@ SubstanceLookAndFeel/setSkin)))])]))
                              :tip "Saves the file to a specific path chosen by user."
                              :listen [:action handler]))
 
+(def eval-text (menu-item :text "Send to nREPL"
+                          :tip "Sends the text in nREPL as clojure code to the nREPL server."
+                          :listen [:action handler]))
+
 (def f (frame :title "nRepl GUI"
               :id 1
               :menubar (menubar :items
-                                [(menu :text "File" :items [starting-server stopping-server connecting-server open-file save-file  save-as-file run-terminal exit-program])
+                                [(menu :text "File" :items [open-file save-file  save-as-file run-terminal exit-program])
+                                 (menu :text "nREPL" :items [starting-server stopping-server connecting-server eval-text])
                                  (menu :text "Settings" :items [select-theme])
                                  (menu :text "Help" :items [docs])])
               :width 640
