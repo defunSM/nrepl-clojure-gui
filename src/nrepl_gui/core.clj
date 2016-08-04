@@ -89,8 +89,6 @@
               :renderer (fn [this {:keys [value]}]
                           (text! this (.getClassName value)))
               :listen   [:selection (fn [e]
-                                      ; Invoke later because CB doens't like changing L&F while
-                                      ; it's doing stuff.
                                       (invoke-later
                                         (-> e
                                           selection
@@ -133,7 +131,6 @@ SubstanceLookAndFeel/setSkin)))])]))
 
 (defn doc-f [] (text :multi-line? true :text "[Documentation]\n\nBy default the server started is on 127.0.0.1:8000\n\nTo Stop the Server:\n\n1) Go to File.\n2) Click 'Stop nREPL server'.\n3) This will terminate the server and you'll be notified of the server being terminated.\n\nTo Start a New Server:\n\n1) Go to File.\n2) Click 'Start nREPL server'.\n3) Enter the port you want in the input box.\n4) The host is by default 127.0.0.1 and should show that you are connected.\n\nConnect to External nREPL Server:\n\n1) Go to File.\n2) Click connect to external nREPL using the port number.\n3)Make sure that the external is running or there will be an error.\n\n For more information check the github:\nhttps://github.com/defunSM/nrepl-clojure-gui" :wrap-lines? true :columns 30))
 
-
 (def exit-program (menu-item :text "Exit"
                              :tip "Closes the entire program."
                              :listen [:action handler]))
@@ -155,8 +152,8 @@ SubstanceLookAndFeel/setSkin)))])]))
                                   :listen [:action handler]))
 
 (def docs (menu-item :text "Documentation"
-                      :tip "Provides documentation and help."
-                      :listen [:action handler]))
+                     :tip "Provides documentation and help."
+                     :listen [:action handler]))
 
 (def run-terminal (menu-item :text "Run Terminal"
                              :tip "Provides a terminal allowing you to run bash commands."
@@ -181,7 +178,7 @@ SubstanceLookAndFeel/setSkin)))])]))
 (def f (frame :title "nRepl GUI"
               :id 1
               :menubar (menubar :items
-                                [(menu :text "File" :items [open-file save-file  save-as-file run-terminal exit-program])
+                                [(menu :text "File" :items [open-file save-file save-as-file run-terminal exit-program])
                                  (menu :text "nREPL" :items [starting-server stopping-server connecting-server eval-text])
                                  (menu :text "Settings" :items [select-theme])
                                  (menu :text "Help" :items [docs])])
