@@ -18,7 +18,6 @@
 (native!)
 
 ;; Add selection to the text
-;;
 
 (declare display-area)
 (declare direct-input)
