@@ -8,4 +8,5 @@
                  [com.github.insubstantial/substance "7.1"]
                  [org.clojure/tools.nrepl "0.2.11"]]
   :main nrepl-gui.core
-  :plugins [[cider/cider-nrepl "0.9.1"]])
+  :plugins [[cider/cider-nrepl "0.9.1"]]
+  :profiles {:uberjar {:main nrepl-gui.core, :aot :all}})

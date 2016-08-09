@@ -3,7 +3,8 @@
   (:gen-class)
   (:require [clojure.string :as str]
             [clojure.tools.nrepl :as repl]
-            [nrepl-gui.sshgui]))
+            [nrepl-gui.sshgui]
+            [nrepl-gui.chatgui]))
 
 (use '[clojure.tools.nrepl.server :only (start-server stop-server)])
 (use 'clojure.repl)
@@ -151,7 +152,9 @@ SubstanceLookAndFeel/setSkin)))])]))
       (do (spit (input "Enter the path you want to save to: ") (text text-editor))))
     (if (= e "Send to nREPL")
       (do (with-open [conn (repl/connect :port @serverport)]
-            (text! display-area (format-output (doall (repl/message (repl/client conn 1000) {:op :eval :code (text text-editor)})))))))))
+            (text! display-area (format-output (doall (repl/message (repl/client conn 1000) {:op :eval :code (text text-editor)})))))))
+    (if (= e "Start ChatBox")
+      (do (invoke-later (-> chatgui.core/f pack! show!))))))
 
 ;; The documentation text that appears when clicking the documentation in the help menubar.
 
@@ -223,6 +226,10 @@ SubstanceLookAndFeel/setSkin)))])]))
                           :tip "Sends the text in nREPL as clojure code to the nREPL server."
                           :listen [:action handler]))
 
+(def launch-chatbox (menu-item :text "Start ChatBox"
+                               :tip "This will launch the ChatBox."
+                               :listen [:action handler]))
+
 ;; This is the main frame that is first displayed and contains a menubar and content which includes individual widgets.
 
 (def f (frame :title "nRepl GUI"
@@ -230,6 +237,7 @@ SubstanceLookAndFeel/setSkin)))])]))
               :menubar (menubar :items
                                 [(menu :text "File" :items [open-file save-file save-as-file run-terminal exit-program])
                                  (menu :text "nREPL" :items [starting-server stopping-server connecting-server eval-text])
+                                 (menu :text "ChatBox" :items [launch-chatbox])
                                  (menu :text "Settings" :items [select-theme])
                                  (menu :text "Help" :items [docs])])
               :width 640
