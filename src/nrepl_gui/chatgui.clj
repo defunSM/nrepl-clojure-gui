@@ -10,8 +10,10 @@
 (use 'clojure.java.shell)
 (native!)
 
+(declare f)
 (declare display-area)
 (declare input-command)
+
 
 (defn sh-command [command-args]
   (let [val (str/split command-args #" ")
@@ -48,13 +50,22 @@
 
 ;; Must fix since makeing the frame is not working at the moment when running lein run in nrepl-gui.
 
+(defn handler [event]
+  (let [e (.getActionCommand event)]
+    (if (= e "Close ChatBox")
+      (do (-> f hide!)))))
+
+(def close-chatbox (menu-item :text "Close ChatBox"
+                              :tip "Closes the ChatBox."
+                              :listen [:action handler]))
+
 (def f (frame :title "Chat"
               :id 100
-              :menubar (menubar :items [(menu :text "File" :items [])])
+              :menubar (menubar :items [(menu :text "File" :items [close-chatbox])])
               :height 300
               :width 300
               :on-close :hide
-              :content content))
+              :content (content)))
 
 (defn -main []
   (println "GUI up and running...")
