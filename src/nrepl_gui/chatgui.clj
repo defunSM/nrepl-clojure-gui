@@ -9,7 +9,6 @@
 (use 'seesaw.core)
 (use 'seesaw.font)
 (use 'seesaw.dev)
-(use 'seesaw.timer)
 (use 'clojure.java.shell)
 (native!)
 
@@ -17,6 +16,8 @@
 (declare display-area)
 (declare input-command)
 (def chatname (atom "Unknown"))
+
+
 
 (defn sh-command [command-args]
   (let [val (str/split command-args #" ")
