@@ -16,7 +16,7 @@
 (declare display-area)
 (declare input-command)
 (def chatname (atom "Unknown"))
-
+(def chatserver (atom "http://servesm.herokuapp.com/"))
 
 
 (defn sh-command [command-args]
@@ -40,7 +40,7 @@
 (defn set-interval [callback ms]
   (future (while true (do (Thread/sleep ms) (callback)))))
 
-(def job (set-interval #(do (text! display-area (clojure.string/replace (:out (sh "curl" "localhost:5000/chat")) #"%20" " "))) 1000))
+(def job (set-interval #(do (text! display-area (clojure.string/replace (:out (sh "curl" (str @chatserver "chat"))) #"%20" " "))) 1000))
 
 ;; Keypress for the chatbox which will clear the input-command and send the new message once enter is pressed.
 
@@ -48,14 +48,14 @@
   (let [k (.getKeyChar e)]
     (println k (type k))
     (if (= k \newline)
-      (do (sh "curl" (str "localhost:5000/chat?" @chatname "=" (clojure.string/replace (text input-command) #" " "%20")))
+      (do (sh "curl" (str @chatserver "chat?" @chatname "=" (clojure.string/replace (text input-command) #" " "%20")))
           (text! input-command "")))))
 
 (def input-command (text :multi-line? false :text "" :listen [:key-typed keypress]))
 (def display-area (text :multi-line? true :text "You have launched ChatBox.\n\n\n\n\n" :foreground "white" :background "black"))
 
 (defn southcontent []
-  (horizontal-panel :items [(label :text ">") input-command]))
+  (horizontal-panel :items [(label :text "=>") input-command]))
 
 (defn content []
   (border-panel
@@ -68,9 +68,13 @@
     (if (= e "Close ChatBox")
       (do (-> f hide!)))
     (if (= e "Refresh ChatBox")
-      (do (sh-command "curl http://localhost:5000/chat?")))
+      (do (sh-command (str "curl" @chatserver "chat?"))))
+    (if (= e "Clear Chat")
+      (do (sh "curl" (str @chatserver "clearchat"))))
     (if (= e "Change Chat Name")
-      (do (reset! chatname (input "Enter the name you want in the chatbox: "))))))
+      (do (reset! chatname (input "Enter the name you want in the chatbox: "))))
+    (if (=e "Change ChatServer")
+      (do (reset! chatserver (input "Enter the new ChatServer: "))))))
 
 (def close-chatbox (menu-item :text "Close ChatBox"
                               :tip "Closes the ChatBox."
@@ -84,9 +88,17 @@
                                 :tip "This allows you to change your chat name."
                                 :listen [:action handler]))
 
+(def clear-chat (menu-item :text "Clear Chat"
+                           :tip "Clears the entire chat."
+                           :listen [:action handler]))
+
+(def change-chatserver (menu-item :text "Change ChatServer"
+                                  :tip "Changes the chatserver you are recieving messages from."
+                                  :listen [:action handler]))
+
 (def f (frame :title "Chat"
               :id 100
-              :menubar (menubar :items [(menu :text "File" :items [close-chatbox refresh-chat enter-chat-name])])
+              :menubar (menubar :items [(menu :text "File" :items [close-chatbox refresh-chat clear-chat change-chatserver enter-chat-name])])
               :height 300
               :width 300
               :on-close :hide
