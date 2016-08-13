@@ -33,6 +33,7 @@
 
 ;; This defn helps format the result of the clojure code in the display-area widget.
 
+
 (defn format-output [val]
   (let [myvec (apply str val)
         modvec (str/split myvec #",")

@@ -31,15 +31,25 @@
     (if (= counter 4)
       (text! display-area (:out (sh (first val) (second val) (nth val 2) (nth val 3)))))
     (if (= counter 5)
-      (text! display-area (:out (sh (first val) (second val) (nth val 2) (nth val 3) (nth val 4)))))))
+      (text! display-area (:out (sh (first val) (second val) (nth val 2) (nth val 3) (nth val 4)))))
+    (if (= counter 6)
+      (text! display-area (:out (sh (first val) (second val) (nth val 2) (nth val 3) (nth val 4) (nth val 5)))))))
 
 ;; Finish this keypress so that it'll remove the <br></br> from the text using regex.
+
+(defn set-interval [callback ms]
+  (future (while true (do (Thread/sleep ms) (callback)))))
+
+(def job (set-interval #(do (text! display-area (clojure.string/replace (:out (sh "curl" "localhost:5000/chat")) #"%20" " "))) 1000))
+
+;; Keypress for the chatbox which will clear the input-command and send the new message once enter is pressed.
 
 (defn keypress [e]
   (let [k (.getKeyChar e)]
     (println k (type k))
     (if (= k \newline)
-      (do (sh-command (str "curl localhost:5000/chat?" @chatname "=" (text input-command) " "))))))
+      (do (sh "curl" (str "localhost:5000/chat?" @chatname "=" (clojure.string/replace (text input-command) #" " "%20")))
+          (text! input-command "")))))
 
 (def input-command (text :multi-line? false :text "" :listen [:key-typed keypress]))
 (def display-area (text :multi-line? true :text "You have launched ChatBox.\n\n\n\n\n" :foreground "white" :background "black"))
