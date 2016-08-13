@@ -27,7 +27,7 @@ Selecting a theme for the nREPL GUI.
 - A settings file. (COMING UP)
 - Text Editor (DONE)
 - Add a menubar (added a terminal)
-
+- Add more things to the ChatBox (NOT DONE)
 
 ## Features 
 
@@ -35,6 +35,7 @@ Selecting a theme for the nREPL GUI.
 - Can connect to external nREPLs.
 - Can launch a terminal to run bash commands. (NOT FULLY FUNCTIONAL YET)
 - Can be used to edit text.
+- Added a ChatBox.
 
 ## License
 
